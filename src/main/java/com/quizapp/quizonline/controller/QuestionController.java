@@ -17,6 +17,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/quizzes")
 @RequiredArgsConstructor
+@CrossOrigin("http://localhost:5173")
 public class QuestionController {
     private final IQuestionService questionService;
 
