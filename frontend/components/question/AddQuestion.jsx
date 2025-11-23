@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react'
+import {Link} from 'react-router-dom'
 import { createQuestion, getSubjects } from '../../utils/QuizService';
 
 const AddQuestion = () => {
@@ -162,7 +163,9 @@ const AddQuestion = () => {
                 {!correctAnswers.length && <p> Please enter at least one correct answer. </p>}
                 <div className='btn-group'>
                   <button type= "submit" className='btn btn-outline-success mr-2'>Save Question</button>
-                  {/*<Link to={""} className='btn btn-outline-success mr-2'>Save Question</Link>*/}
+                  <Link to={"/all-quizzes"} className="btn btn-outline-primary mr-2">
+                    Back to Existing Questions
+                  </Link>
                 </div>
               </form>
             </div>

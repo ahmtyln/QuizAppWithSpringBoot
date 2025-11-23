@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router'
 import { fetchQuizForUser } from '../../utils/QuizService'
+import AnswerOptions from '../../utils/AnswerOptions'
 
 const Quiz = () => {
   const [quizQuestions, setQuizQuestions] = useState([{
@@ -57,13 +58,13 @@ const Quiz = () => {
       const selectedAnswer = Array.isArray(choice) ? choice.map((c) => c.charAt(0)) : choice.charAt(0)
       if(existingAnswerIndex !== -1){
         const updatedAnswers =[...prevAnswers]
-        const existingAnswers=updatedAnswers[existingAnswerIndex].answer
+        const existingAnswer=updatedAnswers[existingAnswerIndex].answer
         let newAnswer
-        if(Array.isArray(existingAnswers)){
-          newAnswer=existingAnswers.includes(selectedAnswer) ? existingAnswers.filter((a) => a !== selectedAnswer)
-          : [...existingAnswers, selectedAnswer]
+        if(Array.isArray(existingAnswer)){
+          newAnswer=existingAnswer.includes(selectedAnswer) ? existingAnswer.filter((a) => a !== selectedAnswer)
+          : [...existingAnswer, selectedAnswer]
         }else{
-          newAnswer=[existingAnswers, selectedAnswer]
+          newAnswer=[existingAnswer, selectedAnswer]
         }
         updatedAnswers[existingAnswerIndex] = {id:questionId,answer:newAnswer}
         return updatedAnswers
@@ -79,16 +80,20 @@ const Quiz = () => {
     quizQuestions.forEach((question) =>{
       const selectedAnswer = selectedAnswers.find((answer) => answer.id === question.id)
       if (selectedAnswer) {
-        const selectedOptions = Array.isArray(selectedAnswer.answer) ? selectedAnswer.answer : [selectedAnswer.answer]
-        const correctOptions = Array.isArray(question.correctAnswers) ? question.correctAnswers : [question.correctAnswers]
-        const isCorrect = selectedOptions.every((option) => correctOptions.includes(option))
+         const selectedOptions = Array.isArray(selectedAnswer.answer)
+        ? selectedAnswer.answer.map((option) => option.charAt(0))
+        : [selectedAnswer.answer.charAt(0)];
+      const correctOptions = Array.isArray(question.correctAnswers)
+        ? question.correctAnswers.map((option) => option.charAt(0))
+        : [question.correctAnswers.charAt(0)];
+      const isCorrect = selectedOptions.length === correctOptions.length && selectedOptions.every((option) => correctOptions.includes(option));
         if(isCorrect){
           scores++
         }
       }
     })
     setTotalScores(scores)
-    setSelectedAnswers([{id: "",answer:[""]}])
+    setSelectedAnswers([])
     setCurrentQuestionIndex(0)
     navigate("/quiz-result", {state:{quizQuestions,totalScores:scores}})
   }
@@ -112,6 +117,32 @@ const Quiz = () => {
       <h3 className="text-info">
         Question{quizQuestions.length>0 ? currentQuestionIndex+1 : 0} of {quizQuestions.length}
       </h3>
+      <h4 className="mb-4">
+       <pre>{quizQuestions[currentQuestionIndex]?.question}</pre> 
+      </h4>  
+       <AnswerOptions
+        question={quizQuestions[currentQuestionIndex]}
+        isChecked={isChecked}
+        handleAnswerChange={handleAnswerChange}
+        handleCheckboxChange={handleCheckboxChange}
+       />
+
+       <div className="mt-4">
+        <button
+					className={`btn btn-sm btn-info ${
+						currentQuestionIndex === quizQuestions.length - 1 && "btn btn-sm btn-warning"
+					}`}
+					onClick={handleNextQuestion}
+					disabled={
+						!selectedAnswers.find(
+							(answer) =>
+								answer.id === quizQuestions[currentQuestionIndex]?.id || answer.answer.length > 0
+						)
+					}>
+					{currentQuestionIndex === quizQuestions.length - 1 ? "Submit quiz" : "Next question"}
+				</button>
+       </div>
+      
     </div>
   )
 }

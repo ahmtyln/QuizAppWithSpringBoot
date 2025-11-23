@@ -92,7 +92,10 @@ const UpdateQuestion = () => {
               Update Question
             </button>
 
-            {/* Todo: add a link back to all questions */ }
+            <Link to={"/all-quizzes"}>
+                <button className="btn btn-outline-primary mr-2">
+                Edit Question</button>
+            </Link>
           </div>
         </form>
       </div>

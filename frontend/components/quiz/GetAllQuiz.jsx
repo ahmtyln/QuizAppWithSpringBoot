@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react'
+import {Link} from 'react-router-dom'
+import { FaPlus } from 'react-icons/fa';
 import { deleteQuestion, getAllQuestions } from '../../utils/QuizService';
 
 const GetAllQuiz = () => {
@@ -46,7 +48,9 @@ const GetAllQuiz = () => {
                 <h4>All Quiz questions</h4>
             </div>
             <div className='col-md-4 d-flex justify-content-end'>
-                {/* Todo : add a link to navigate to add New question form */}
+                <Link to={"/create-quiz"}>
+                    <FaPlus/> Add Question
+                </Link>
             </div>
         </div> 
         <hr />
@@ -62,7 +66,9 @@ const GetAllQuiz = () => {
                 </ul>
                 <p className='text-success' >Correct Answer: {question.correctAnswers} </p>
                 <div className='btn-group mb-4'>
-                    {/* Todo : add a link to navigate to update question form */}
+                    <Link to={`/update-quiz/${question.id}`}>
+                        <button className="btn btn-sm btn-outline-warning mr-2">Edit Question</button>
+                    </Link>
                     <button className='btn btn-outline-danger btn-sm' onClick={() => handleDelete(question.id)}>Delete Question</button>
                 </div>
             </div>
